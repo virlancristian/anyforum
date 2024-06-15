@@ -1,14 +1,13 @@
-import { JsxElement } from "typescript";
+import { RouterProvider } from "react-router-dom";
+
 import PageHeader from "../components/header/PageHeader";
-import UserOptionDrownDown from "../components/header/UserOptionDropDown";
+import { router } from "../routers/Router";
 
 export default function MainPage() {
     return (
         <>
             <PageHeader />
-                <div className="h-full w-full bg-yellow-500 w-11/12">
-                a
-            </div> 
+            <RouterProvider router={router} />
         </>
     )
 }
