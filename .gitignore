@@ -14,6 +14,7 @@
 
 # misc
 /src/frontend/.DS_Store
+/src/frontend/.env
 /src/frontend/.env.local
 /src/frontend/.env.development.local
 /src/frontend/.env.test.local
