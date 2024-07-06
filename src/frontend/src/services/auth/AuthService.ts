@@ -12,7 +12,24 @@ async function registerAccount(authFormData: AuthForm) {
 
     try {
         const response = await axios.post(`${API_URL}/api/user/register`, body);
-        console.log(response);
+        
+        return response;
+    } catch(error: any) {
+        console.log(`Error while trying to register account: ${error}`);
+        return error.response;
+    }
+}
+
+async function login(authFormData: AuthForm) {
+    const body: any = {
+        email: authFormData.email,
+        password: authFormData.password
+    };
+
+    try {
+        const response = await axios.post(`${API_URL}/api/user/login`, body);
+        
+        return response;
     } catch(error: any) {
         console.log(`Error while trying to register account: ${error}`);
         return error.response;
@@ -20,5 +37,6 @@ async function registerAccount(authFormData: AuthForm) {
 }
 
 export const AuthService = {
-    registerAccount
+    registerAccount,
+    login
 }

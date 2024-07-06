@@ -4,5 +4,7 @@ export const AUTH_ERROR_MESSAGES = [
     "Invalid username format.",
     "Invalid e-mail format.",
     "Invalid password format.",
-    "Passwords do not match."
+    "Passwords do not match.",
+    "User not found.",
+    "Incorrect password."
 ]

@@ -1,4 +1,4 @@
-export const REGISTER_FORM_LABELS: any = {
+export const AUTH_FORM_LABELS: any = {
     "username": "Username",
     "email": "E-mail",
     "password": "Password",

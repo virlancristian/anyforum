@@ -2,6 +2,6 @@ import User from "./User";
 
 export default interface UserContextProps {
     user: User | null;
-    login: () => void;
+    login: (user: User) => void;
     logout: () => void;
 };

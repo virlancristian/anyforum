@@ -16,10 +16,10 @@ public class TokenUtil {
         this.secret = secret;
     }
 
-    public String generateToken(AuthJwtToken userToken) {
+    public String generateToken(Object item) {
         return Jwts
                 .builder()
-                .setSubject(userToken.toString())
+                .setSubject(item.toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() * 1000000))
                 .signWith(SignatureAlgorithm.HS512, secret)

@@ -4,7 +4,7 @@ import AuthForm from '../../models/user/AuthForm';
 
 export const useAuthForm = (authType: string) => {
     const [authFormData, setAuthFormData] = useState<AuthForm>({
-        username: '',
+        username: authType === `register` ? '' : undefined,
         email: '',
         password: '',
         repeatPassword: authType === `register` ? '' : undefined
