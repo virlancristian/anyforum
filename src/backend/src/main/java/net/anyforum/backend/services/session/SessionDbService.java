@@ -1,10 +1,12 @@
 package net.anyforum.backend.services.session;
 
 import net.anyforum.backend.constants.SessionConstants;
-import net.anyforum.backend.models.database.SessionDbEntity;
+import net.anyforum.backend.models.database.session.SessionDbEntity;
 import net.anyforum.backend.repos.session.SessionDbRepo;
 import net.anyforum.backend.util.regex.RegexStringGenerator;
 import net.anyforum.backend.util.time.DateHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class SessionDbService {
     @Autowired
     private SessionDbRepo sessionDbRepo;
+    private static final Logger logger = LogManager.getLogger();
 
     public SessionDbEntity getSessionByID(String sessionID) {
         SessionDbEntity foundSession;
@@ -24,7 +27,7 @@ public class SessionDbService {
                 foundSession = new SessionDbEntity("", "", "", "");
             }
         } catch(IllegalArgumentException | OptimisticLockingFailureException error) {
-            System.out.println("Error in SessionDbEntity::getSessionByID - failed to get session: " + error);
+            logger.error("Error in SessionDbEntity::getSessionByID - failed to get session: " + error);
             foundSession = new SessionDbEntity("", "", "", "");
         }
 
@@ -41,7 +44,7 @@ public class SessionDbService {
                 foundSession = new SessionDbEntity("", "", "", "");
             }
         } catch(IllegalArgumentException | OptimisticLockingFailureException error) {
-            System.out.println("Error in SessionDbEntity::getSessionByID - failed to get session: " + error);
+            logger.error("Error in SessionDbEntity::getSessionByID - failed to get session: " + error);
             foundSession = new SessionDbEntity("", "", "", "");
         }
 
@@ -57,7 +60,7 @@ public class SessionDbService {
         try {
             sessionDbRepo.save(newSession);
         } catch (IllegalArgumentException | OptimisticLockingFailureException error) {
-            System.out.println("Error in SessionDbService::createSession - failed to create session: " + error);
+            logger.error("Error in SessionDbService::createSession - failed to create session: " + error);
             return null;
         }
 
@@ -70,10 +73,23 @@ public class SessionDbService {
         try {
             sessionDbRepo.delete(foundSession);
         } catch(IllegalArgumentException | OptimisticLockingFailureException error) {
-            System.out.println("Error in SessionDbService::deleteSession - unable to delete session: " + error);
+            logger.error("Error in SessionDbService::deleteSession - unable to delete session: " + error);
             return false;
         }
 
         return true;
+    }
+
+    public SessionDbEntity getSessionByToken(String token) {
+        SessionDbEntity foundSession;
+
+        try {
+            foundSession = sessionDbRepo.getSessionByToken(token);
+        } catch(IllegalArgumentException | OptimisticLockingFailureException error) {
+            logger.error("Error in SessionDbService::getSessionByToken - failed to retrieve session: " + error);
+            foundSession = null;
+        }
+
+        return foundSession;
     }
 }

@@ -1,15 +1,15 @@
 import { Dispatch, SetStateAction } from "react";
 import { NavigateFunction } from "react-router-dom";
-
-import AuthForm from "../../models/user/AuthForm";
-import User from "../../models/user/User";
-import sanitizeInputs from "../../util/auth/SanitizeInputs";
-import { AUTH_ERROR_MESSAGES } from "../../constants/AuthErrorMessages";
-import { AuthService } from "../../services/auth/AuthService";
-import showNotification from "../../util/notification/ShowNotification";
 import { jwtDecode } from "jwt-decode";
-import { SessionService } from "../../services/session/SessionService";
 import Cookies from "universal-cookie";
+
+import AuthForm from "../../../models/user/AuthForm";
+import User from "../../../models/user/User";
+import sanitizeInputs from "../../../util/auth/SanitizeInputs";
+import { AUTH_ERROR_MESSAGES } from "../../../constants/AuthErrorMessages";
+import { AuthService } from "../../../services/auth/AuthService";
+import showNotification from "../../../util/notification/ShowNotification";
+import { SessionService } from "../../../services/session/SessionService";
 
 export default async function handleLogin(authFormData: AuthForm,
                                             setIsError: Dispatch<SetStateAction<boolean>>,
@@ -33,7 +33,7 @@ export default async function handleLogin(authFormData: AuthForm,
 
     const decodedToken = jwtDecode(authServiceResponse.data.token);
     const decodedTokenData: string = decodedToken.sub ? decodedToken.sub : '';
-    console.log(decodedTokenData);
+
     const sessionServiceResponse = await SessionService.createSession(decodedTokenData);
 
     if(sessionServiceResponse.status !== 200) {
@@ -43,9 +43,10 @@ export default async function handleLogin(authFormData: AuthForm,
 
     const { user, sessionID, sessionToken, sessionExpiryDate } = SessionService.decodeSessionToken(sessionServiceResponse.data.token);
     const cookies = new Cookies(null, { path: '/' });
-    console.log(sessionExpiryDate);
+    const previousAuthURLPath: string = window.localStorage.getItem(`anyforum-preauth-path`) || "/";
+
     login(user);
     cookies.set(`anyforum-session-id`, sessionID, { expires: new Date(sessionExpiryDate) });
     cookies.set(`anyforum-session-token`, sessionToken, { expires: new Date(sessionExpiryDate) });
-    navigate("/");
+    navigate(previousAuthURLPath);
 }

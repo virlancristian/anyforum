@@ -1,4 +1,4 @@
-package net.anyforum.backend.models.database;
+package net.anyforum.backend.models.database.user;
 
 import jakarta.persistence.*;
 

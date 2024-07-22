@@ -4,7 +4,7 @@ import { AUTH_FORM_LABELS } from "../../constants/RegisterFormLabels";
 import { AUTH_FORM_TYPES } from "../../constants/RegisterFormTypes";
 import { useAuthForm } from "../../hooks/auth/UseAuthForm";
 import FormTemplate from "../form/FormTemplate";
-import handleRegister from "../../events/mouse/handleRegister";
+import handleRegister from "../../events/mouse/auth/handleRegister";
 import { UserContext } from "../../hooks/user/UserContext";
 import UserContextProps from "../../models/user/UserContextProps";
 import { useNavigate } from "react-router-dom";

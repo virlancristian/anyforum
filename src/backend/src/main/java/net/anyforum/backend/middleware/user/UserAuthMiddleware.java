@@ -3,7 +3,7 @@ package net.anyforum.backend.middleware.user;
 import net.anyforum.backend.constants.AuthConstants;
 import net.anyforum.backend.constants.MiddlewareMessage;
 import net.anyforum.backend.models.api.auth.AuthRequestBody;
-import net.anyforum.backend.models.database.UserDbEntity;
+import net.anyforum.backend.models.database.user.UserDbEntity;
 import net.anyforum.backend.services.user.UserDbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

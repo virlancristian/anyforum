@@ -1,4 +1,4 @@
-package net.anyforum.backend.models.database;
+package net.anyforum.backend.models.database.session;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

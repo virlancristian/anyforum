@@ -1,6 +1,6 @@
 package net.anyforum.backend.repos.user;
 
-import net.anyforum.backend.models.database.UserDbEntity;
+import net.anyforum.backend.models.database.user.UserDbEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -8,7 +8,7 @@ import { useAuthForm } from "../../hooks/auth/UseAuthForm";
 import FormTemplate from "../form/FormTemplate";
 import { AUTH_FORM_TYPES } from "../../constants/RegisterFormTypes";
 import { AUTH_FORM_LABELS } from "../../constants/RegisterFormLabels";
-import handleLogin from "../../events/mouse/HandleLogin";
+import handleLogin from "../../events/mouse/auth/HandleLogin";
 
 export default function LoginForm() {
     const userContextProps: UserContextProps = useContext(UserContext);

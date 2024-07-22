@@ -4,7 +4,7 @@ import net.anyforum.backend.constants.MiddlewareMessage;
 import net.anyforum.backend.middleware.user.UserAuthMiddleware;
 import net.anyforum.backend.models.api.auth.AuthRequestBody;
 import net.anyforum.backend.models.api.auth.AuthResponse;
-import net.anyforum.backend.services.user.UserAuthTokenDbService;
+import net.anyforum.backend.services.authorization.AuthorizationHelperService;
 import net.anyforum.backend.services.user.UserDbService;
 import net.anyforum.backend.util.jwt.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class UserAuthController {
     @Autowired
     private UserDbService userDbService;
     @Autowired
-    private UserAuthTokenDbService userAuthTokenDbService;
+    private AuthorizationHelperService authorizationHelperService;
     @Autowired
     private UserAuthMiddleware userAuthMiddleware;
     @Autowired
@@ -33,10 +33,11 @@ public class UserAuthController {
         }
 
         String userID = userDbService.addUser(userCredentials.getUsername(), userCredentials.getEmail(), userCredentials.getPassword());
+        boolean isMemberRoleAdded = authorizationHelperService.addMemberRole(userID);
 
         return ResponseEntity.
-                status(!userID.equals("") ? 200 : 500).
-                body(new AuthResponse(!userID.equals("") ? "" : "Internal server error", util.generateToken(userID)));
+                status(!userID.isEmpty() && isMemberRoleAdded ? 200 : 500).
+                body(new AuthResponse(!userID.isEmpty() ? "" : "Internal server error", util.generateToken(userID)));
     }
 
     @CrossOrigin

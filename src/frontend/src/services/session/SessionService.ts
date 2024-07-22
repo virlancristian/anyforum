@@ -43,7 +43,7 @@ function decodeSessionToken(token: string) {
 
     const user: User = {
         username: decodedTokenData.username,
-        id: decodedTokenData.id,
+        id: decodedTokenData.userID,
         email: decodedTokenData.email,
         isMuted: decodedTokenData.isMuted,
         isBanned: decodedTokenData.isBanned,

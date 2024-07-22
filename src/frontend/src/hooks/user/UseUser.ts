@@ -4,9 +4,12 @@ import { jwtDecode } from 'jwt-decode';
 import User from '../../models/user/User';
 import Cookies from 'universal-cookie';
 import { SessionService } from '../../services/session/SessionService';
+import Role from '../../models/authorization/Role';
+import { AuthorizationService } from '../../services/authorization/AuthorizationService';
 
 export const useUSer = () => {
     const [user, setUser] = useState<User | null>(null);
+    const [roles, setRoles] = useState<Role[]>([]);
 
     const login = (user: User) => {
         setUser(user);
@@ -39,14 +42,26 @@ export const useUSer = () => {
         }
     }
 
+    const getRoles = async () => {
+        if(user) {
+            const roles: Role[] = await AuthorizationService.getUserRoles(user.id);
+            setRoles(roles);
+        }
+    }
+
     useEffect(() => {
         getSession();
-        console.log(user);
     }, []); 
+
+    useEffect(() => {
+        getRoles();
+    }, [user]);
+
 
     return {
         user,
         login,
-        logout
+        logout,
+        roles
     }
 };

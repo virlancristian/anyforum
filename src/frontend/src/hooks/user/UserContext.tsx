@@ -13,14 +13,15 @@ export const UserContext = createContext<UserContextProps>({
         nsfwOn: false
     },
     login: () => {},
-    logout: () => {}
+    logout: () => {},
+    roles: []
 });
 
 export const UserContextProvider = ( { children}: { children: any } ) => {
-    const { user, login, logout } = useUSer();
+    const { user, login, logout, roles } = useUSer();
 
     return (
-        <UserContext.Provider value={{ user, login, logout }}>
+        <UserContext.Provider value={{ user, login, logout, roles }}>
             {children}
         </UserContext.Provider>
     )

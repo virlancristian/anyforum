@@ -46,4 +46,20 @@ public class SessionMiddleware {
 
         return MiddlewareMessage.OK;
     }
+
+    public MiddlewareMessage verifyTokenRequest(String sessionToken) {
+        String[] splitSessionToken;     //Sesion token is formated like this: AnyForumToken {sessionToken}
+
+        if(sessionToken == null) {
+            return MiddlewareMessage.MISSING_AUTHORIZATION_TOKEN;
+        }
+
+        splitSessionToken = sessionToken.split(" +");
+
+        if(!splitSessionToken[0].equals("AnyForumToken")) {
+            return MiddlewareMessage.INVALID_AUTHORIZATION_TOKEN;
+        }
+
+        return sessionDbService.getSessionByToken(splitSessionToken[1]) != null ? MiddlewareMessage.OK : MiddlewareMessage.INVALID_AUTHORIZATION_TOKEN;
+    }
 }

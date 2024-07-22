@@ -1,5 +1,7 @@
 package net.anyforum.backend;
 
+import net.anyforum.backend.repos.role.RoleDbRepo;
+import net.anyforum.backend.repos.user.UserDataDbRepo;
 import net.anyforum.backend.services.user.UserDbService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,9 +17,9 @@ public class BackendApplication {
 	}
 
 	@Bean
-	public CommandLineRunner demo(UserDbService userDbService) {
+	public CommandLineRunner demo(UserDataDbRepo userDataDbRepo) {
 		return args -> {
-			System.out.println(userDbService.getUserById("1101"));
+			System.out.println(userDataDbRepo.getUserByID("fka;k;adsf"));
 		};
 	}
 }

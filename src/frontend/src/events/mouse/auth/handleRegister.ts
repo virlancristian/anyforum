@@ -2,13 +2,13 @@ import { Dispatch, SetStateAction } from "react";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "universal-cookie";
 
-import AuthForm from "../../models/user/AuthForm";
-import sanitizeInputs from "../../util/auth/SanitizeInputs";
-import { AUTH_ERROR_MESSAGES } from "../../constants/AuthErrorMessages";
-import { AuthService } from "../../services/auth/AuthService";
-import showNotification from "../../util/notification/ShowNotification";
-import { SessionService } from "../../services/session/SessionService";
-import User from "../../models/user/User";
+import AuthForm from "../../../models/user/AuthForm";
+import sanitizeInputs from "../../../util/auth/SanitizeInputs";
+import { AUTH_ERROR_MESSAGES } from "../../../constants/AuthErrorMessages";
+import { AuthService } from "../../../services/auth/AuthService";
+import showNotification from "../../../util/notification/ShowNotification";
+import { SessionService } from "../../../services/session/SessionService";
+import User from "../../../models/user/User";
 import { NavigateFunction } from "react-router-dom";
 
 export default async function handleRegister(authFormData: AuthForm,
@@ -44,10 +44,11 @@ export default async function handleRegister(authFormData: AuthForm,
   const { user, sessionID, sessionToken, sessionExpiryDate } = SessionService.decodeSessionToken(sessionServiceResponse.data.token);
 
   const cookies = new Cookies(null, { path: '/' });
+  const previousAuthURLPath: string = window.localStorage.getItem(`anyforum-preauth-path`) || "";
 
   cookies.set(`anyforum-session-id`, sessionID, { expires: new Date(sessionExpiryDate) });
   cookies.set(`anyforum-session-token`, sessionToken, { expires: new Date(sessionExpiryDate) });
 
   login(user);
-  navigate("/");
+  navigate(previousAuthURLPath);
 }

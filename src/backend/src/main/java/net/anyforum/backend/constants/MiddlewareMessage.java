@@ -13,7 +13,11 @@ public enum MiddlewareMessage {
     USER_NOT_FOUND("User not found."),
     INVALID_SESSION_ID("Invalid session ID format."),
     SESSION_NOT_FOUND("Session not found."),
-    INCORRECT_PASSWORD("Incorrect password.");
+    INCORRECT_PASSWORD("Incorrect password."),
+    MISSING_AUTHORIZATION_TOKEN("Missing authorization token"),
+    INVALID_AUTHORIZATION_TOKEN("Invalid authorization token"),
+    SESSION_TOKEN_NOT_MATCHING("The provided token does not match the required user."),
+    INVALID_IMAGE_FORMAT("Invalid image format.");
 
     private String message;
 
