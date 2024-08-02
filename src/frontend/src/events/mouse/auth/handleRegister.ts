@@ -44,10 +44,10 @@ export default async function handleRegister(authFormData: AuthForm,
   const { user, sessionID, sessionToken, sessionExpiryDate } = SessionService.decodeSessionToken(sessionServiceResponse.data.token);
 
   const cookies = new Cookies(null, { path: '/' });
-  const previousAuthURLPath: string = window.localStorage.getItem(`anyforum-preauth-path`) || "";
+  const previousAuthURLPath: string = window.localStorage.getItem(`anytopic-preauth-path`) || "/";
 
-  cookies.set(`anyforum-session-id`, sessionID, { expires: new Date(sessionExpiryDate) });
-  cookies.set(`anyforum-session-token`, sessionToken, { expires: new Date(sessionExpiryDate) });
+  cookies.set(`anytopic-session-id`, sessionID, { expires: new Date(sessionExpiryDate) });
+  cookies.set(`anytopic-session-token`, sessionToken, { expires: new Date(sessionExpiryDate) });
 
   login(user);
   navigate(previousAuthURLPath);

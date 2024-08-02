@@ -9,6 +9,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLSyntaxErrorException;
+import java.util.List;
 
 @Service
 public class SessionHelperService {
@@ -35,20 +36,19 @@ public class SessionHelperService {
     }
 
     public SessionDbEntity getSessionByUserID(String userID) {
-        SessionDbEntity foundSession;
+        List<SessionDbEntity> foundSession;
 
         try {
             foundSession = sessionDbRepo.getSessionByUser(userID);
 
-            if(foundSession == null) {
-                foundSession = new SessionDbEntity();
-                foundSession.setSessionID("NOT_FOUND");
+            if(foundSession == null || foundSession.isEmpty()) {
+                return new SessionDbEntity("", "NOT_FOUND", "", "");
             }
         } catch(IllegalArgumentException | OptimisticLockingFailureException error) {
-            logger.error("Error in SessionHelperService::getSessionByUserID - failed to retrieve session: " + error.getMessage());
+            logger.error("Error in SessionDbEntity::getSessionByID - failed to get session: " + error);
             return null;
         }
 
-        return foundSession;
+        return foundSession.get(0);
     }
 }

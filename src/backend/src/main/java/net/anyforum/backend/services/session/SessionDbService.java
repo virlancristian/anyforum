@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SessionDbService {
     @Autowired
@@ -35,20 +37,20 @@ public class SessionDbService {
     }
 
     public SessionDbEntity getSessionByUser(String userID) {
-        SessionDbEntity foundSession;
+        List<SessionDbEntity> foundSession;
 
         try {
             foundSession = sessionDbRepo.getSessionByUser(userID);
 
-            if(foundSession == null) {
-                foundSession = new SessionDbEntity("", "", "", "");
+            if(foundSession == null || foundSession.isEmpty()) {
+                return new SessionDbEntity("", "", "", "");
             }
         } catch(IllegalArgumentException | OptimisticLockingFailureException error) {
             logger.error("Error in SessionDbEntity::getSessionByID - failed to get session: " + error);
-            foundSession = new SessionDbEntity("", "", "", "");
+            return new SessionDbEntity("", "", "", "");
         }
 
-        return foundSession;
+        return foundSession.get(0);
     }
 
     public SessionDbEntity createSession(String userID) {

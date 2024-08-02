@@ -63,7 +63,7 @@ public class CommonMiddleware {
 
         splitSessionToken = sessionToken.split(" +");
 
-        if(!splitSessionToken[0].equals("AnyForumToken")) {
+        if(!splitSessionToken[0].equals("AnyTopicToken")) {
             return MiddlewareMessage.INVALID_AUTHORIZATION_TOKEN;
         }
 

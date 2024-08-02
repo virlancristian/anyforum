@@ -17,20 +17,20 @@ export const useUSer = () => {
 
     const logout = async () => {
         const cookies = new Cookies();
-        const sessionID: string = cookies.get(`anyforum-session-id`);
+        const sessionID: string = cookies.get(`anytopic-session-id`);
 
         const response = await SessionService.deleteSession(sessionID);
 
         if(response.status === 200) {
             setUser(null);
-            cookies.remove(`anyforum-session-id`);
-            cookies.remove(`anyforum-session-token`);
+            cookies.remove(`anytopic-session-id`);
+            cookies.remove(`anytopic-session-token`);
         }
     };
 
     const getSession = async () => {
         const cookies = new Cookies(null, { path: '/' });
-        const sessionID: string = cookies.get(`anyforum-session-id`);
+        const sessionID: string = cookies.get(`anytopic-session-id`);
 
         const response = await SessionService.getSession(sessionID);
 
@@ -38,7 +38,7 @@ export const useUSer = () => {
             const { user, sessionID, sessionToken, sessionExpiryDate } = SessionService.decodeSessionToken(response.data.token);
 
             setUser(user);
-            cookies.set(`anyforum-session-token`, sessionToken, { expires: new Date(sessionExpiryDate) });
+            cookies.set(`anytopic-session-token`, sessionToken, { expires: new Date(sessionExpiryDate) });
         }
     }
 

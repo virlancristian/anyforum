@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface SessionDbRepo extends JpaRepository<SessionDbEntity, String> {
     @Query(value = "SELECT * " +
@@ -16,7 +18,7 @@ public interface SessionDbRepo extends JpaRepository<SessionDbEntity, String> {
     @Query(value = "SELECT * " +
             "FROM user_sessions " +
             "WHERE userID = :id", nativeQuery = true)
-    SessionDbEntity getSessionByUser(@Param("id") String userID);
+    List<SessionDbEntity> getSessionByUser(@Param("id") String userID);
 
     @Query(value = "SELECT * " +
             "FROM user_sessions " +
