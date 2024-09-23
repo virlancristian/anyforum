@@ -1,6 +1,6 @@
 package net.anyforum.backend.repos.role;
 
-import net.anyforum.backend.models.database.authorization.PermissionDbEntity;
+import net.anyforum.backend.models.authorization.PermissionDbEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,4 +29,15 @@ public interface PermissionDbRepo extends JpaRepository<PermissionDbEntity, Inte
             "WHERE C.roleID = :roleID",
             nativeQuery = true)
     List<PermissionDbEntity> getRolePermissions(@Param("roleID") Integer roleID);
+
+    @Query(value = "SELECT * FROM permissions", nativeQuery = true)
+    List<PermissionDbEntity> getAllPermissions();
+
+    @Query(value = "SELECT A.* " +
+            "FROM permissions A " +
+            "JOIN roles_permissions B ON B.permissionID = A.permissionID " +
+            "JOIN users_roles C ON C.roleID = B.roleID " +
+            "WHERE C.userID = :id",
+            nativeQuery = true)
+    List<PermissionDbEntity> getUserPermsByID(@Param("id") String userID);
 }

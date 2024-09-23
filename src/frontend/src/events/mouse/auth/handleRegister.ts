@@ -5,9 +5,9 @@ import Cookies from "universal-cookie";
 import AuthForm from "../../../models/user/AuthForm";
 import sanitizeInputs from "../../../util/auth/SanitizeInputs";
 import { AUTH_ERROR_MESSAGES } from "../../../constants/AuthErrorMessages";
-import { AuthService } from "../../../services/auth/AuthService";
+import { AuthApi } from "../../../api/auth/AuthApi";
 import showNotification from "../../../util/notification/ShowNotification";
-import { SessionService } from "../../../services/session/SessionService";
+import { SessionApi } from "../../../api/session/SessionApi";
 import User from "../../../models/user/User";
 import { NavigateFunction } from "react-router-dom";
 
@@ -25,7 +25,7 @@ export default async function handleRegister(authFormData: AuthForm,
     return;
   }
 
-  const authServiceRespone = await AuthService.registerAccount(authFormData);
+  const authServiceRespone = await AuthApi.registerAccount(authFormData);
 
   if (authServiceRespone.status === 400 || authServiceRespone.status === 500) {
     showNotification(authServiceRespone.data.message, 2);
@@ -33,7 +33,7 @@ export default async function handleRegister(authFormData: AuthForm,
   }
 
   let decodedToken = jwtDecode(authServiceRespone.data.token);
-  const sessionServiceResponse = await SessionService.createSession(decodedToken.sub ? decodedToken.sub : '');
+  const sessionServiceResponse = await SessionApi.createSession(decodedToken.sub ? decodedToken.sub : '');
 
   if (sessionServiceResponse.status === 400 || sessionServiceResponse.status === 500) {
     showNotification(sessionServiceResponse.data.message, 2);
@@ -41,7 +41,7 @@ export default async function handleRegister(authFormData: AuthForm,
   }
 
   
-  const { user, sessionID, sessionToken, sessionExpiryDate } = SessionService.decodeSessionToken(sessionServiceResponse.data.token);
+  const { user, sessionID, sessionToken, sessionExpiryDate } = SessionApi.decodeSessionToken(sessionServiceResponse.data.token);
 
   const cookies = new Cookies(null, { path: '/' });
   const previousAuthURLPath: string = window.localStorage.getItem(`anytopic-preauth-path`) || "/";

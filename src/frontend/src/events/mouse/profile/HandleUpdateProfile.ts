@@ -1,4 +1,4 @@
-import { ImageService } from "../../../services/image/ImageService";
+import { ImageApi } from "../../../api/image/ImageApi";
 import showNotification from "../../../util/notification/ShowNotification";
 
 interface Props {
@@ -10,13 +10,12 @@ interface Props {
 
 export default async function handleUpdateProfile(props: Props): Promise<void> {
     const { username, aboutMe, profilePicture, userID } = props;
+    let profilePictureResponseStatus: number = 200;
 
     if(profilePicture) {
-        const {status, imageName} = await ImageService.uploadProfilePicture(profilePicture, userID);
-        if(status === 200) {
-            showNotification(`Image uploaded successfully!`, 0);
-        } else {
-            showNotification(imageName, 2);
-        }
+        const { status } = await ImageApi.uploadProfilePicture(profilePicture, userID);
+        profilePictureResponseStatus = status;    
     }
+
+
 }

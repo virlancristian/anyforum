@@ -30,19 +30,18 @@ public class ImageStorageService {
         }
     }
 
-    public String saveProfilePictureImage(BufferedImage image, String userID, String receivedImageName) {
-        String imageExtension = FileUtil.getFileExtension(receivedImageName);
-        String storedImageName = new String(userID.concat(".".concat(imageExtension)));
+    public boolean saveProfilePictureImage(BufferedImage image, String userID, String receivedImageName) {
+        String storedImageName = new String(userID.concat(".jpg"));
         File imageFile = new File(IMAGES_DIRECTORY.concat("/avatars/".concat(storedImageName)));
 
         try {
-            ImageIO.write(image, imageExtension, imageFile);
+            ImageIO.write(image, "jpg", imageFile);
         } catch(IOException error) {
             logger.error("Error in ImageStorageService::saveProfilePictureImage - failed to save image: " + error.getMessage());
-            return "";
+            return false;
         }
 
-        return storedImageName;
+        return true;
     }
 
     public ByteArrayResource getProfilePicture(String imageName) {
@@ -50,7 +49,7 @@ public class ImageStorageService {
             File imageFile = new File(IMAGES_DIRECTORY.concat("/avatars/".concat(imageName)));
             BufferedImage foundImage = ImageIO.read(imageFile);
 
-            return new ImageDTO().mapToByteArrayResource(foundImage, FileUtil.getFileExtension(imageName));
+            return new ImageDTO().mapToByteArrayResource(foundImage, "jpg");
         } catch (IOException error) {
             logger.error("Error in ImageStorageService::getProfilePicture - failed to get image: " + error.getMessage());
             return null;

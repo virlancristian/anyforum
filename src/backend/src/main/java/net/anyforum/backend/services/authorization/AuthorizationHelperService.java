@@ -1,7 +1,7 @@
 package net.anyforum.backend.services.authorization;
 
-import net.anyforum.backend.models.database.authorization.UserRoleDbEntity;
-import net.anyforum.backend.models.database.authorization.UserRoleID;
+import net.anyforum.backend.models.authorization.UserRoleDbEntity;
+import net.anyforum.backend.models.authorization.UserRoleID;
 import net.anyforum.backend.repos.role.RolePermissionDbRepo;
 import net.anyforum.backend.repos.role.UserRoleDbRepo;
 import org.apache.logging.log4j.LogManager;

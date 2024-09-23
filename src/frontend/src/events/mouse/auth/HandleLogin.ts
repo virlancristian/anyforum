@@ -7,9 +7,9 @@ import AuthForm from "../../../models/user/AuthForm";
 import User from "../../../models/user/User";
 import sanitizeInputs from "../../../util/auth/SanitizeInputs";
 import { AUTH_ERROR_MESSAGES } from "../../../constants/AuthErrorMessages";
-import { AuthService } from "../../../services/auth/AuthService";
+import { AuthApi } from "../../../api/auth/AuthApi";
 import showNotification from "../../../util/notification/ShowNotification";
-import { SessionService } from "../../../services/session/SessionService";
+import { SessionApi } from "../../../api/session/SessionApi";
 
 export default async function handleLogin(authFormData: AuthForm,
                                             setIsError: Dispatch<SetStateAction<boolean>>,
@@ -24,7 +24,7 @@ export default async function handleLogin(authFormData: AuthForm,
         return;
     }
 
-    const authServiceResponse = await AuthService.login(authFormData);
+    const authServiceResponse = await AuthApi.login(authFormData);
 
     if(authServiceResponse.status !== 200) {
         showNotification(authServiceResponse.data.message, 2);
@@ -34,14 +34,14 @@ export default async function handleLogin(authFormData: AuthForm,
     const decodedToken = jwtDecode(authServiceResponse.data.token);
     const decodedTokenData: string = decodedToken.sub ? decodedToken.sub : '';
 
-    const sessionServiceResponse = await SessionService.createSession(decodedTokenData);
+    const sessionServiceResponse = await SessionApi.createSession(decodedTokenData);
 
     if(sessionServiceResponse.status !== 200) {
         showNotification(`There was an error while trying to create the session`, 2);
         return;
     }
 
-    const { user, sessionID, sessionToken, sessionExpiryDate } = SessionService.decodeSessionToken(sessionServiceResponse.data.token);
+    const { user, sessionID, sessionToken, sessionExpiryDate } = SessionApi.decodeSessionToken(sessionServiceResponse.data.token);
     const cookies = new Cookies(null, { path: '/' });
     const previousAuthURLPath: string = window.localStorage.getItem(`anytopic-preauth-path`) || "/";
 

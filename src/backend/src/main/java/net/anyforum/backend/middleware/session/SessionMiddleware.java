@@ -24,7 +24,7 @@ public class SessionMiddleware {
             return MiddlewareMessage.INVALID_USER_ID;
         }
 
-        if(userDbService.getUserById(userID).getUsername() == null) {
+        if(userDbService.getUserById(userID).getId() == null) {
             return MiddlewareMessage.USER_NOT_FOUND;
         }
 

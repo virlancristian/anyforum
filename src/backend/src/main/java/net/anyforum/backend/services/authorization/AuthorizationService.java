@@ -1,7 +1,7 @@
 package net.anyforum.backend.services.authorization;
 
-import net.anyforum.backend.models.database.authorization.PermissionDbEntity;
-import net.anyforum.backend.models.database.authorization.RoleDbEntity;
+import net.anyforum.backend.models.authorization.PermissionDbEntity;
+import net.anyforum.backend.models.authorization.RoleDbEntity;
 import net.anyforum.backend.repos.role.PermissionDbRepo;
 import net.anyforum.backend.repos.role.RoleDbRepo;
 import org.apache.logging.log4j.LogManager;
@@ -55,5 +55,29 @@ public class AuthorizationService {
         }
 
         return foundRoles;
+    }
+
+    public List<PermissionDbEntity> getAllPermissions() {
+        List<PermissionDbEntity> allPermissions = new LinkedList<>();
+
+        try {
+            allPermissions = permissionDbRepo.getAllPermissions();
+        } catch (Exception error) {
+            logger.error("Error in AuthorizationService::getAllPermissions - failed to retrieve all permissions: " + error.getMessage());
+        }
+
+        return allPermissions;
+    }
+
+    public List<PermissionDbEntity> getUserPerms(String userID) {
+        List<PermissionDbEntity> userPerms = new LinkedList<>();
+
+        try {
+            userPerms = permissionDbRepo.getUserPermsByID(userID);
+        } catch(Exception error) {
+            logger.error("Error in AuthorizationService::getUserPerms - failed to retrieve user perms: " + error.getMessage());
+        }
+
+        return userPerms;
     }
 }

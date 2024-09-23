@@ -1,49 +1,77 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 
 import UserData from '../../models/user/UserData';
 import Role from '../../models/authorization/Role';
-import { UserService } from '../../services/user/UserService';
-import { AuthorizationService } from '../../services/authorization/AuthorizationService';
+import { UserApi } from '../../api/user/UserApi';
+import { PermissionApi } from '../../api/permission/PermissionApi';
 
-export const useUserPublicData = (username: string) => {
-    const [userData, setUserData] = useState<UserData | null>(null);
-    const [roles, setRoles] = useState<Role[]>([]);
-    const [isUserDataLoading, setIsUserDataLoading] = useState<boolean>(false);
+interface UserPublicDataState {
+    userData: UserData | null;
+    roles: Role[];
+    isUserDataLoading: boolean;
+};
 
-    const fetchUserData = async () => {
-        const fetchedUserData: UserData | null = await UserService.getUserData(username);
+type UserPublicDataAction = 
+    | { type: `SET_USER_DATA`; payload: UserData | null }
+    | { type: `SET_USER_ROLES`; payload: Role[] }
+    | { type: `SET_IS_USER_LOADING`; payload: boolean };
 
-        if(fetchedUserData) {
-            setUserData(fetchedUserData);
+const userPublicDataReduer = (state: UserPublicDataState, action: UserPublicDataAction): UserPublicDataState => {
+    switch(action.type) {
+        case `SET_USER_DATA`: 
+            return {
+                ...state,
+                userData: action.payload
+            };
+        case `SET_USER_ROLES`: 
+            return {
+                ...state,
+                roles: action.payload
+            };
+        case `SET_IS_USER_LOADING`: 
+            return {
+                ...state,
+                isUserDataLoading: action.payload
+            }
+        default:
+            return state;
+    }
+}
+
+const initialState: UserPublicDataState = {
+    userData: null,
+    roles: [],
+    isUserDataLoading: false
+};
+
+export const useUserPublicData = (username: string): {
+    userData: UserData | null;
+    roles: Role[];
+    isUserDataLoading: boolean;
+} => {
+    const [state, dispatch] = useReducer(userPublicDataReduer, initialState);
+
+    const fetchUserPublicData = async () => {
+        dispatch({ type: `SET_IS_USER_LOADING`, payload: true });
+
+        const userData: UserData | null = await UserApi.getUserData(username);
+
+        if(userData) {
+            const roles: Role[] = await PermissionApi.getUserRoles(username);
+            dispatch({ type: `SET_USER_ROLES`, payload: roles });
         }
-    };
 
-    const fetchUserRoles = async () => {
-        const fetchedData: any = await AuthorizationService.getUserRoles(username);
-        if(Object.keys(fetchedData).length > 0) {
-            setRoles(fetchedData);
-        }
-    };
-
-    const fetchAllData = async () => {
-        try {
-            setIsUserDataLoading(true);
-            await fetchUserData();
-            await fetchUserRoles();
-        } catch(error) {
-            console.error(`Error in useUserPublicData hook - failed to fetch user data on state change: ${error}`);
-        } finally {
-            setIsUserDataLoading(false);
-        }
+        dispatch({ type: `SET_USER_DATA`, payload: userData });
+        dispatch({ type: `SET_IS_USER_LOADING`, payload: false });
     }
 
     useEffect(() => {
-        fetchAllData();
+        fetchUserPublicData();
     }, [username]);
 
     return {
-        userData,
-        roles,
-        isUserDataLoading
+        userData: state.userData,
+        roles: state.roles,
+        isUserDataLoading: state.isUserDataLoading
     };
 };

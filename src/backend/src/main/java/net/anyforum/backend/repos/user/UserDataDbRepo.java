@@ -1,6 +1,6 @@
 package net.anyforum.backend.repos.user;
 
-import net.anyforum.backend.models.database.user.UserDataDbEntity;
+import net.anyforum.backend.models.user.UserDataDbEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,10 +14,9 @@ public interface UserDataDbRepo extends JpaRepository<UserDataDbEntity, String> 
             nativeQuery = true)
     UserDataDbEntity getUserByID(@Param("id") String id);
 
-    @Query(value = "SELECT B.* " +
-            "FROM users A " +
-            "JOIN user_data B ON B.userid = A.id " +
-            "WHERE A.username = :username",
+    @Query(value = "SELECT * " +
+            "FROM user_data " +
+            "WHERE username = :username",
             nativeQuery = true)
     UserDataDbEntity getUserByUsername(@Param("username") String username);
 }

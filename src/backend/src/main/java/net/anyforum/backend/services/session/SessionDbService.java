@@ -1,10 +1,8 @@
 package net.anyforum.backend.services.session;
 
-import net.anyforum.backend.constants.SessionConstants;
-import net.anyforum.backend.models.database.session.SessionDbEntity;
+import net.anyforum.backend.models.session.SessionDbEntity;
+import net.anyforum.backend.models.session.SessionDTO;
 import net.anyforum.backend.repos.session.SessionDbRepo;
-import net.anyforum.backend.util.regex.RegexStringGenerator;
-import net.anyforum.backend.util.time.DateHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +52,7 @@ public class SessionDbService {
     }
 
     public SessionDbEntity createSession(String userID) {
-        String sessionID = RegexStringGenerator.generateString(SessionConstants.SESSION_ID_REGEX);
-        String sessionToken = RegexStringGenerator.generateString(SessionConstants.SESSION_TOKEN_REGEX);
-        String expiresAt = DateHelper.getFutureDate(365);
-        SessionDbEntity newSession = new SessionDbEntity(sessionID, userID, sessionToken, expiresAt);
+        SessionDbEntity newSession = SessionDTO.mapToSessionDbEntity(userID);
 
         try {
             sessionDbRepo.save(newSession);

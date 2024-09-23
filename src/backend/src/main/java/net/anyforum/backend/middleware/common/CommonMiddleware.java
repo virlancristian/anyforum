@@ -1,7 +1,7 @@
 package net.anyforum.backend.middleware.common;
 
 import net.anyforum.backend.constants.MiddlewareMessage;
-import net.anyforum.backend.models.database.session.SessionDbEntity;
+import net.anyforum.backend.models.session.SessionDbEntity;
 import net.anyforum.backend.services.session.SessionHelperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

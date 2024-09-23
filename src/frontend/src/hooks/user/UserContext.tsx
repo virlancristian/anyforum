@@ -14,14 +14,16 @@ export const UserContext = createContext<UserContextProps>({
     },
     login: () => {},
     logout: () => {},
-    roles: []
+    roles: [],
+    permissions: [],
+    isUserLoading: false
 });
 
 export const UserContextProvider = ( { children}: { children: any } ) => {
-    const { user, login, logout, roles } = useUSer();
+    const { user, login, logout, roles, permissions, isUserLoading } = useUSer();
 
     return (
-        <UserContext.Provider value={{ user, login, logout, roles }}>
+        <UserContext.Provider value={{ user, login, logout, roles, permissions, isUserLoading }}>
             {children}
         </UserContext.Provider>
     )

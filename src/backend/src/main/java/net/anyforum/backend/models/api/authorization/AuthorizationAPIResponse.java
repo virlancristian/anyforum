@@ -1,7 +1,7 @@
 package net.anyforum.backend.models.api.authorization;
 
-import net.anyforum.backend.models.database.authorization.PermissionDbEntity;
-import net.anyforum.backend.models.database.authorization.RoleDbEntity;
+import net.anyforum.backend.models.authorization.PermissionDbEntity;
+import net.anyforum.backend.models.authorization.RoleDbEntity;
 
 import java.util.LinkedList;
 import java.util.List;

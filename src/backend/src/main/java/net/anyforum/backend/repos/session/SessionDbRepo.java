@@ -1,6 +1,6 @@
 package net.anyforum.backend.repos.session;
 
-import net.anyforum.backend.models.database.session.SessionDbEntity;
+import net.anyforum.backend.models.session.SessionDbEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

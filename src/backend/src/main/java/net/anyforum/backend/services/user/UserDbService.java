@@ -1,16 +1,10 @@
 package net.anyforum.backend.services.user;
 
-import net.anyforum.backend.constants.AuthConstants;
+import com.sun.istack.NotNull;
 import net.anyforum.backend.exceptions.UserNotFoundException;
-import net.anyforum.backend.models.api.user.UserAPIRequest;
-import net.anyforum.backend.models.api.user.UserDataAPIResponse;
-import net.anyforum.backend.models.database.user.UserDataDbEntity;
-import net.anyforum.backend.models.database.user.UserDbEntity;
-import net.anyforum.backend.models.dto.user.UserDTO;
+import net.anyforum.backend.models.user.*;
 import net.anyforum.backend.repos.user.UserDataDbRepo;
 import net.anyforum.backend.repos.user.UserDbRepo;
-import net.anyforum.backend.util.regex.RegexStringGenerator;
-import net.anyforum.backend.util.time.DateHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +21,7 @@ public class UserDbService {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private static final Logger logger = LogManager.getLogger();
 
-    public UserDbEntity getUserById(String id) {
+    public UserDbEntity getUserById(@NotNull String id) {
         UserDbEntity foundUser;
 
         try {
@@ -44,7 +38,7 @@ public class UserDbService {
         return foundUser;
     }
 
-    public UserDbEntity getUserByUsername(String username) {
+    public UserDbEntity getUserByUsername(@NotNull String username) {
         UserDbEntity foundUser;
 
         try {
@@ -61,7 +55,7 @@ public class UserDbService {
         return foundUser;
     }
 
-    public UserDbEntity getUserByEmail(String email) {
+    public UserDbEntity getUserByEmail(@NotNull String email) {
         UserDbEntity foundUser;
 
         try {
@@ -78,26 +72,22 @@ public class UserDbService {
         return foundUser;
     }
 
-    public String addUser(String username, String email, String password) {
-        String id = RegexStringGenerator.generateString(AuthConstants.ID_REGEX);
-        String encryptedPasswordFull = passwordEncoder.encode(password);
-        String[] splitEncryptedPassword = encryptedPasswordFull.split("\\$");
-        String salt = "$".concat(splitEncryptedPassword[1].concat("$".concat(splitEncryptedPassword[2].concat("$".concat(splitEncryptedPassword[3].substring(0, 22))))));
-        String encryptedPassword = splitEncryptedPassword[splitEncryptedPassword.length - 1].substring(22);
-        String todaysDate = DateHelper.getCurrentDate();
+    public String addUser(@NotNull UserSignup userSignupData) {
+        UserDbEntity newUserDbEntity = UserDTO.mapToUserDbEntity(userSignupData);
+        UserDataDbEntity newUserDataDbEntity = UserDTO.mapToUserDataDbEntity(newUserDbEntity.getId());
 
         try {
-            userDbRepo.save(new UserDbEntity(id, username, email, salt, encryptedPassword));
-            userDataDbRepo.save(new UserDataDbEntity(id, "", "", todaysDate));
+            userDbRepo.save(newUserDbEntity);
+            userDataDbRepo.save(newUserDataDbEntity);
         } catch(Exception error) {
             logger.error("Error in UserDbService::addUser - failed to add user to database: " + error);
             return "";
         }
 
-        return id;
+        return newUserDbEntity.getId();
     }
 
-    public UserDataDbEntity getUserDataById(String userID) {
+    public UserDataDbEntity getUserDataById(@NotNull String userID) {
         UserDataDbEntity foundUserData;
 
         try {
@@ -115,7 +105,7 @@ public class UserDbService {
         return foundUserData;
     }
 
-    public UserDataAPIResponse getUserDataByUsername(String username) {
+    public UserPublicData getUserDataByUsername(@NotNull String username) {
         UserDataDbEntity foundUserData;
         UserDbEntity foundUser;
 
@@ -134,19 +124,19 @@ public class UserDbService {
             return null;
         }
 
-        return new UserDTO(foundUser, foundUserData).mapToAPIResponse();
+        return UserDTO.mapToUserPublicData(foundUser, foundUserData);
     }
 
-    public boolean updateUserData(UserAPIRequest newUserData, String userID) throws UserNotFoundException  {
+    public boolean updateUserData(UserPublicDataUpdate userPublicDataUpdate, String userID) throws UserNotFoundException  {
         UserDataDbEntity foundUserData = userDataDbRepo.getUserByID(userID);
         UserDbEntity foundUser = userDbRepo.getUserById(userID);
 
-        if(foundUserData == null || foundUserData.getUserID().equals("Not found.")) {
+        if(foundUserData == null || foundUser == null) {
             throw new UserNotFoundException();
         }
 
-        foundUser = new UserDTO().mapNewUserCredentials(newUserData, foundUser);
-        foundUserData = new UserDTO().mapNewUserData(newUserData, foundUserData);
+        foundUserData = UserDTO.mapUpdatedUserData(userPublicDataUpdate, foundUserData);
+        foundUser = UserDTO.mapUpdatedUserDbEntity(userPublicDataUpdate, foundUser);
 
         try {
             userDataDbRepo.save(foundUserData);

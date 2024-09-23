@@ -1,6 +1,6 @@
 package net.anyforum.backend.repos.role;
 
-import net.anyforum.backend.models.database.authorization.RoleDbEntity;
+import net.anyforum.backend.models.authorization.RoleDbEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,7 +33,7 @@ public interface RoleDbRepo extends JpaRepository<RoleDbEntity, Integer> {
     @Query(value = "SELECT A.* " +
             "FROM roles A " +
             "JOIN users_roles B on B.roleID = A.roleID " +
-            "JOIN users C on C.id = B.userID " +
+            "JOIN user_data C on C.userid = B.userID " +
             "WHERE C.username = :username",
             nativeQuery = true)
     List<RoleDbEntity> getUserRolesByUsername(@Param("username") String username);

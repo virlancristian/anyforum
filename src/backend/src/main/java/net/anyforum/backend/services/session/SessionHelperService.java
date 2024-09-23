@@ -1,6 +1,6 @@
 package net.anyforum.backend.services.session;
 
-import net.anyforum.backend.models.database.session.SessionDbEntity;
+import net.anyforum.backend.models.session.SessionDbEntity;
 import net.anyforum.backend.repos.session.SessionDbRepo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLSyntaxErrorException;
 import java.util.List;
 
 @Service

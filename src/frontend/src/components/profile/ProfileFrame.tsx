@@ -1,7 +1,14 @@
+import { useContext } from "react";
+
+import { API_URL } from "../../constants/Misc";
 import Role from "../../models/authorization/Role";
 import UserData from "../../models/user/UserData";
+import { UserContext } from "../../hooks/user/UserContext";
+
+import '../../css/profile/profile.css';
 
 export default function ProfileFrame({ userData, roles }: { userData: UserData | null, roles: Role[] }) {
+    const { user } = useContext(UserContext);
     if(userData === null) {
         return <p>Not available</p>
     }
@@ -10,7 +17,7 @@ export default function ProfileFrame({ userData, roles }: { userData: UserData |
         <div className="w-3/12 p-3">
            <h2 className="w-full bg-gray-800 text-white text-2xl font-bold p-2">{userData.username}</h2>
            <div className="w-full h-96 flex justify-center items-center bg-gray-100 bg-opacity-10">
-                <img src={userData.profilePictureURL} className="max-h-full max-w-full"/>
+                <img src={`${API_URL}/api/images/avatar/user/${userData.id}`} className="max-h-full max-w-full" id={userData.nsfwOn && !user?.nsfwOn ? `blured-profile-picture` : ''}/>
            </div>
            {
                 (userData.isBanned || userData.isMuted) && (
@@ -28,7 +35,7 @@ export default function ProfileFrame({ userData, roles }: { userData: UserData |
                 </p>
                 <div style={{gridColumn: `2/2`}}>
                     {
-                        roles.map((role: Role) => (<p className="text-white text-xl w-fit p-1 rounded font-semibold my-1" style={{background: `${role.color}`}}>{role.name}</p>))
+                        roles.map((role: Role) => (<p key={role.roleID} className="text-white text-xl w-fit p-1 rounded font-semibold my-1" style={{background: `${role.color}`}}>{role.name}</p>))
                     }
                 </div>
            </div>

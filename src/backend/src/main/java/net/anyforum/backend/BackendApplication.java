@@ -1,5 +1,6 @@
 package net.anyforum.backend;
 
+import net.anyforum.backend.repos.role.PermissionDbRepo;
 import net.anyforum.backend.repos.role.RoleDbRepo;
 import net.anyforum.backend.repos.user.UserDataDbRepo;
 import net.anyforum.backend.services.user.UserDbService;
@@ -17,9 +18,9 @@ public class BackendApplication {
 	}
 
 	@Bean
-	public CommandLineRunner demo(UserDataDbRepo userDataDbRepo) {
+	public CommandLineRunner demo(PermissionDbRepo permissionDbRepo) {
 		return args -> {
-			System.out.println(userDataDbRepo.getUserByID("fka;k;adsf"));
+			System.out.println(permissionDbRepo.getUserPermsByID("34029"));
 		};
 	}
 }

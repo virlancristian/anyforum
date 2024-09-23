@@ -17,6 +17,7 @@ public enum MiddlewareMessage {
     MISSING_AUTHORIZATION_TOKEN("Missing authorization token"),
     INVALID_AUTHORIZATION_TOKEN("Invalid authorization token"),
     SESSION_TOKEN_NOT_MATCHING("The provided token does not match the required user."),
+    PASSWORDS_NOT_MATCHING("Passwords do not match."),
     INVALID_IMAGE_FORMAT("Invalid image format.");
 
     private String message;

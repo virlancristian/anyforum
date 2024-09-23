@@ -36,6 +36,7 @@ public class ImageController {
                                                          @RequestBody MultipartFile profilePicture) {
         MiddlewareMessage requestIntegrityMessage = commonMiddleware.verifyRequestIntegrity(userID, authorizationToken);
         MiddlewareMessage imageUploadRequestIntegrity = imageMiddleware.verifyProfilePictureUploadRequest(profilePicture);
+        boolean isImageSaved;
 
         if(requestIntegrityMessage != MiddlewareMessage.OK) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CommonAPIResponse(requestIntegrityMessage.getMessage()));
@@ -45,27 +46,22 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CommonAPIResponse(imageUploadRequestIntegrity.getMessage()));
         }
 
-        String storedImageName = imageStorageService
+        isImageSaved = imageStorageService
                                 .saveProfilePictureImage(new ImageDTO().mapToBufferedImage(profilePicture),
                                                         userID,
                                                         profilePicture.getOriginalFilename());
 
-        if(storedImageName.isEmpty()) {
+        if(!isImageSaved) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CommonAPIResponse("Internal server error."));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(new CommonAPIResponse("Image saved successfully!", storedImageName));
+        return ResponseEntity.status(HttpStatus.OK).body(new CommonAPIResponse("Image saved successfully!"));
     }
 
     @CrossOrigin
-    @GetMapping(value = "/avatar/user/{id}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_GIF_VALUE})
-    public ResponseEntity<Resource> getProfilePicture(@PathVariable("id") String userID,
-                                                      @RequestParam("format") String imageFormat) {
-        if(imageMiddleware.verifyGetProfilePictureRequest(imageFormat.toLowerCase()) != MiddlewareMessage.OK) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-
-        ByteArrayResource foundImageBAR = imageStorageService.getProfilePicture(userID.concat(".".concat(imageFormat.toLowerCase())));
+    @GetMapping(value = "/avatar/user/{id}", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE})
+    public ResponseEntity<Resource> getProfilePicture(@PathVariable("id") String userID) {
+        ByteArrayResource foundImageBAR = imageStorageService.getProfilePicture(userID.concat(".jpg"));
 
         if(foundImageBAR == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
